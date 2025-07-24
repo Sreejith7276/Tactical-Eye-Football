@@ -1,0 +1,212 @@
+
+        <!DOCTYPE html>
+        <html lang='en'>
+        <head>
+            <meta charset='UTF-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            <title>Football Match Analysis Report</title>
+            <link href='https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap' rel='stylesheet'>
+            <style>
+                body {
+                    background: #f7f9fb;
+                    font-family: 'Roboto', Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    color: #222;
+                }
+                .header-bar {
+                    background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
+                    color: white;
+                    padding: 32px 0 24px 0;
+                    text-align: center;
+                    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+                    position: relative;
+                }
+                .header-bar .icon {
+                    font-size: 2.5rem;
+                    vertical-align: middle;
+                    margin-right: 12px;
+                }
+                .header-bar h1 {
+                    display: inline-block;
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    margin: 0;
+                    letter-spacing: 1px;
+                }
+                .container {
+                    max-width: 900px;
+                    margin: 32px auto;
+                    background: #fff;
+                    border-radius: 18px;
+                    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+                    padding: 32px 24px 32px 24px;
+                }
+                .meta-card {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 24px;
+                    background: #f3f7fa;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                    padding: 20px 24px;
+                    margin-bottom: 32px;
+                    border-left: 6px solid #00c6ff;
+                }
+                .meta-label {
+                    font-weight: 700;
+                    margin-right: 8px;
+                    color: #0072ff;
+                }
+                .meta-value {
+                    font-weight: 400;
+                    color: #222;
+                }
+                .meta-status.completed {
+                    color: #22bb33;
+                    font-weight: 700;
+                    background: #e6f9ea;
+                    border-radius: 6px;
+                    padding: 2px 10px;
+                    margin-left: 8px;
+                }
+                .meta-status.error {
+                    color: #bb2222;
+                    font-weight: 700;
+                    background: #fbeaea;
+                    border-radius: 6px;
+                    padding: 2px 10px;
+                    margin-left: 8px;
+                }
+                .meta-timestamp {
+                    font-size: 0.98rem;
+                    color: #888;
+                    font-style: italic;
+                    margin-top: 6px;
+                }
+                .team-ids {
+                    margin-bottom: 24px;
+                }
+                .team-ids span {
+                    display: inline-block;
+                    background: #eaf4ff;
+                    color: #0072ff;
+                    border-radius: 8px;
+                    padding: 4px 12px;
+                    margin: 0 8px 8px 0;
+                    font-weight: 500;
+                    font-size: 1.05rem;
+                }
+                .team-section h3 {
+                    margin-top: 32px;
+                    margin-bottom: 10px;
+                    font-size: 1.35rem;
+                    color: #0072ff;
+                    letter-spacing: 0.5px;
+                }
+                .player-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 32px;
+                    background: #f9fbfd;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+                }
+                .player-table th {
+                    background: #0072ff;
+                    color: #fff;
+                    font-weight: 700;
+                    padding: 12px 8px;
+                    font-size: 1.08rem;
+                    border-right: 1px solid #eaf4ff;
+                }
+                .player-table th:last-child {
+                    border-right: none;
+                }
+                .player-table td {
+                    padding: 10px 8px;
+                    border-bottom: 1px solid #eaf4ff;
+                    font-size: 1.04rem;
+                    text-align: center;
+                }
+                .player-table tr:nth-child(even) {
+                    background: #f3f7fa;
+                }
+                .player-table tr:last-child td {
+                    border-bottom: none;
+                }
+                .badge-possession {
+                    display: inline-block;
+                    padding: 2px 10px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    color: #fff;
+                    background: #22bb33;
+                    font-size: 0.98rem;
+                }
+                .badge-possession.low {
+                    background: #ff9800;
+                }
+                .badge-possession.verylow {
+                    background: #bb2222;
+                }
+                .color-circle {
+                    display: inline-block;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    margin-right: 6px;
+                    border: 1.5px solid #bbb;
+                    vertical-align: middle;
+                }
+                @media (max-width: 700px) {
+                    .container { padding: 12px 2px; }
+                    .meta-card { flex-direction: column; gap: 10px; padding: 12px; }
+                    .player-table th, .player-table td { font-size: 0.95rem; padding: 7px 2px; }
+                }
+            </style>
+            <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'>
+        </head>
+        <body>
+            <div class='header-bar'>
+                <span class='icon'><i class='fa-solid fa-futbol'></i></span>
+                <h1>Football Match Analysis Report</h1>
+            </div>
+            <div class='container'>
+                <div class='meta-card'>
+                    <div><span class='meta-label'>Processing ID:</span> <span class='meta-value'>ef340eff-5a25-4b98-a1d9-9cd90a3a3f1f</span></div>
+                    <div><span class='meta-label'>Input Video:</span> <span class='meta-value'>08fd33_4.mp4</span></div>
+                    <div><span class='meta-label'>Output Video:</span> <span class='meta-value'>output_video.mp4</span></div>
+                    <div><span class='meta-label'>Status:</span> <span class='meta-status completed'>Completed</span></div>
+                </div>
+                <div class='meta-timestamp'>Generated at: 2025-05-03 15:12:59</div>
+                <div class='team-ids'>
+                    
+                    
+                </div>
+        <div class='team-section'><h3>1</h3>
+            <table class='player-table'>
+                <tr>
+                    <th>Player ID</th>
+                    <th>Team Color</th>
+                    <th>Total Distance</th>
+                    <th><i class='fa-solid fa-gauge-high'></i> Avg Speed</th>
+                    <th>Frames Present</th>
+                    <th><i class='fa-solid fa-futbol'></i> Ball Possession</th>
+                </tr>
+            <tr><td>5</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>28093.08 m</td><td><i class='fa-solid fa-gauge-high'></i> 8.29 km/h</td><td>748</td><td><span class='badge-possession low'>17</span></td></tr><tr><td>6</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>24882.54 m</td><td><i class='fa-solid fa-gauge-high'></i> 7.48 km/h</td><td>750</td><td><span class='badge-possession'>45</span></td></tr><tr><td>9</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>0.00 m</td><td><i class='fa-solid fa-gauge-high'></i> 0.00 km/h</td><td>259</td><td><span class='badge-possession verylow'>0</span></td></tr><tr><td>11</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>22251.08 m</td><td><i class='fa-solid fa-gauge-high'></i> 6.93 km/h</td><td>741</td><td><span class='badge-possession'>45</span></td></tr><tr><td>12</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>22620.58 m</td><td><i class='fa-solid fa-gauge-high'></i> 8.73 km/h</td><td>740</td><td><span class='badge-possession low'>25</span></td></tr><tr><td>15</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>24021.50 m</td><td><i class='fa-solid fa-gauge-high'></i> 7.86 km/h</td><td>727</td><td><span class='badge-possession verylow'>3</span></td></tr><tr><td>16</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>4359.52 m</td><td><i class='fa-solid fa-gauge-high'></i> 12.46 km/h</td><td>261</td><td><span class='badge-possession verylow'>0</span></td></tr><tr><td>18</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>19.76 m</td><td><i class='fa-solid fa-gauge-high'></i> 12.98 km/h</td><td>20</td><td><span class='badge-possession verylow'>0</span></td></tr><tr><td>19</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>7593.31 m</td><td><i class='fa-solid fa-gauge-high'></i> 6.80 km/h</td><td>728</td><td><span class='badge-possession low'>16</span></td></tr><tr><td>22</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>1335.20 m</td><td><i class='fa-solid fa-gauge-high'></i> 10.09 km/h</td><td>712</td><td><span class='badge-possession verylow'>10</span></td></tr><tr><td>28</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     224.57      228.39      215.49]</td><td>0.00 m</td><td><i class='fa-solid fa-gauge-high'></i> 0.00 km/h</td><td>181</td><td><span class='badge-possession verylow'>0</span></td></tr></table></div><div class='team-section'><h3>2</h3>
+            <table class='player-table'>
+                <tr>
+                    <th>Player ID</th>
+                    <th>Team Color</th>
+                    <th>Total Distance</th>
+                    <th><i class='fa-solid fa-gauge-high'></i> Avg Speed</th>
+                    <th>Frames Present</th>
+                    <th><i class='fa-solid fa-futbol'></i> Ball Possession</th>
+                </tr>
+            <tr><td>1</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>23225.70 m</td><td><i class='fa-solid fa-gauge-high'></i> 6.46 km/h</td><td>750</td><td><span class='badge-possession verylow'>2</span></td></tr><tr><td>3</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>27625.76 m</td><td><i class='fa-solid fa-gauge-high'></i> 8.77 km/h</td><td>747</td><td><span class='badge-possession low'>36</span></td></tr><tr><td>4</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>0.00 m</td><td><i class='fa-solid fa-gauge-high'></i> 0.00 km/h</td><td>351</td><td><span class='badge-possession verylow'>0</span></td></tr><tr><td>7</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>18613.23 m</td><td><i class='fa-solid fa-gauge-high'></i> 6.99 km/h</td><td>731</td><td><span class='badge-possession'>72</span></td></tr><tr><td>8</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>17032.29 m</td><td><i class='fa-solid fa-gauge-high'></i> 7.92 km/h</td><td>728</td><td><span class='badge-possession verylow'>7</span></td></tr><tr><td>10</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>0.00 m</td><td><i class='fa-solid fa-gauge-high'></i> 0.00 km/h</td><td>526</td><td><span class='badge-possession verylow'>0</span></td></tr><tr><td>13</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>0.00 m</td><td><i class='fa-solid fa-gauge-high'></i> 0.00 km/h</td><td>744</td><td><span class='badge-possession low'>31</span></td></tr><tr><td>14</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>24280.67 m</td><td><i class='fa-solid fa-gauge-high'></i> 7.44 km/h</td><td>748</td><td><span class='badge-possession verylow'>0</span></td></tr><tr><td>20</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>0.00 m</td><td><i class='fa-solid fa-gauge-high'></i> 0.00 km/h</td><td>12</td><td><span class='badge-possession verylow'>0</span></td></tr><tr><td>26</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>0.00 m</td><td><i class='fa-solid fa-gauge-high'></i> 0.00 km/h</td><td>188</td><td><span class='badge-possession verylow'>0</span></td></tr><tr><td>34</td><td><span class='color-circle' style='background:#888; border:2px solid #000;'></span>[     141.27      228.19       181.6]</td><td>19749.70 m</td><td><i class='fa-solid fa-gauge-high'></i> 7.85 km/h</td><td>734</td><td><span class='badge-possession verylow'>0</span></td></tr></table></div>
+            </div>
+        </body>
+        </html>
+        

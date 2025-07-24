@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TACTICAL EYE - Upload Video</title>
+    <style>
+        /* Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #141E30, #243B55);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #00c6ff;
+        }
+
+        .logout-btn {
+            background: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: darkred;
+            transform: scale(1.05);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            margin-top: 80px; /* To prevent overlap with header */
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .flash-messages {
+            margin-bottom: 15px;
+        }
+
+        .flash-messages p {
+            background: rgba(255, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: #0072ff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button {
+            text-decoration: none;
+            color: white;
+            background: #00c6ff;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0072ff;
+            transform: scale(1.05);
+        }
+
+        .progress-section {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #00c6ff;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .progress-text {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .cancel-btn {
+            background: #ff3333;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .cancel-btn:hover {
+            background: #cc0000;
+        }
+
+        .video-container {
+            margin-top: 20px;
+        }
+
+        video {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>TACTICAL EYE</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="container">
+        <h2>Upload Video</h2>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Upload Form -->
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="video" accept="video/*" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="progressSection">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Processing: 0%</div>
+            <button class="cancel-btn" id="cancelBtn">Cancel Processing</button>
+        </div>
+
+        <!-- Processed Output Video (always directly below upload form) -->
+        {% if output_video_url %}
+            <div class="video-container">
+                <h3>Processed Output Video</h3>
+                <video width="640" height="360" controls>
+                    <source src="{{ output_video_url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        {% endif %}
+
+        <!-- Review & Download Report Section (always below video) -->
+        <div id="reportSection" style="display:none; margin-top:30px;">
+            <div id="reportStatus" style="font-size:1.1rem; margin-bottom:10px;">
+                Processing video…
+            </div>
+            <button id="viewReportBtn" style="display:none; margin-right:10px;">View Report</button>
+            <button id="downloadReportBtn" style="display:none;">Download Report</button>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if there's a video parameter in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoParam = urlParams.get('video');
+        
+        if (videoParam) {
+            // If video parameter exists, show the video container
+            const videoContainer = document.createElement('div');
+            videoContainer.className = 'video-container';
+            videoContainer.innerHTML = `
+                <h3>Processed Output Video</h3>
+                <video width="640" height="360" controls>
+                    <source src="${window.location.origin}/uploads/${videoParam}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            `;
+            document.querySelector('.container').appendChild(videoContainer);
+        }
+        const progressSection = document.getElementById('progressSection');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const uploadForm = document.querySelector('form');
+        let processingId = null;
+        let progressCheckInterval = null;
+        let reportCheckInterval = null;
+        
+        // Initially hide the progress section
+        progressSection.style.display = 'none';
+        
+        // Show progress section on form submission
+        uploadForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Get the form data
+            const formData = new FormData(uploadForm);
+            
+            // Hide the form and show progress section
+            uploadForm.style.display = 'none';
+            progressSection.style.display = 'block';
+            
+            // Submit the form data via AJAX
+            fetch('{{ url_for("upload") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    processingId = data.processing_id;
+                    
+                    // Start checking progress
+                    progressCheckInterval = setInterval(() => {
+                        checkProcessingProgress(processingId);
+                    }, 1000);
+                    // Show report section (status: processing)
+                    showReportSection('processing');
+                } else {
+                    // Handle error
+                    alert('Error: ' + data.message);
+                    progressSection.style.display = 'none';
+                    uploadForm.style.display = 'flex';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during upload');
+                progressSection.style.display = 'none';
+                uploadForm.style.display = 'flex';
+            });
+            
+            // Cancel button functionality
+            cancelBtn.addEventListener('click', function() {
+                if (progressCheckInterval) {
+                    clearInterval(progressCheckInterval);
+                }
+                
+                if (processingId) {
+                    // Send cancel request to server
+                    fetch('{{ url_for("cancel_processing") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ processing_id: processingId })
+                    });
+                }
+                
+                progressSection.style.display = 'none';
+                uploadForm.style.display = 'flex';
+            });
+        });
+        
+        // Function to check processing progress
+        function checkProcessingProgress(processingId) {
+            fetch(`{{ url_for("check_progress") }}?id=${processingId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'processing') {
+                    // Update progress bar
+                    const progress = data.progress;
+                    progressFill.style.width = progress + '%';
+                    progressText.textContent = 'Processing: ' + progress + '%';
+                } else if (data.status === 'completed') {
+                    clearInterval(progressCheckInterval);
+                    progressFill.style.width = '100%';
+                    progressText.textContent = 'Processing: 100%';
+                    // Show processed video (force reload to get video)
+                    window.location.href = data.redirect_url + `&processing_id=${processingId}`;
+                } else if (data.status === 'error') {
+                    clearInterval(progressCheckInterval);
+                    alert('Error: ' + data.message);
+                    progressSection.style.display = 'none';
+                    uploadForm.style.display = 'flex';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking progress:', error);
+            });
+        }
+
+        // On page load, if processed video is shown and processing_id is in URL, start polling for report
+        if (videoParam) {
+            const processingId = urlParams.get('processing_id');
+            if (processingId) {
+                // Show report section (status: checking report)
+                showReportSection('checking', processingId);
+                reportCheckInterval = setInterval(() => {
+                    checkReportReady(processingId);
+                }, 1500);
+            }
+        }
+
+        // --- Report Section Logic ---
+        function showReportSection(state, processingId) {
+            const reportSection = document.getElementById('reportSection');
+            const reportStatus = document.getElementById('reportStatus');
+            const viewBtn = document.getElementById('viewReportBtn');
+            const downloadBtn = document.getElementById('downloadReportBtn');
+            reportSection.style.display = 'block';
+            viewBtn.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            if (state === 'processing') {
+                reportStatus.textContent = 'Processing video…';
+            } else if (state === 'checking') {
+                reportStatus.textContent = 'Finalizing report…';
+            } else if (state === 'ready') {
+                reportStatus.textContent = 'Report ready!';
+                viewBtn.style.display = 'inline-block';
+                downloadBtn.style.display = 'inline-block';
+                // Set button actions
+                viewBtn.onclick = function() {
+                    window.open(`/view_report/${processingId}`, '_blank');
+                };
+                downloadBtn.onclick = function() {
+                    window.location.href = `/download_report/${processingId}`;
+                };
+            } else if (state === 'error') {
+                reportStatus.textContent = 'Error generating report.';
+            }
+        }
+        function checkReportReady(processingId) {
+            fetch(`/view_report/${processingId}`)
+            .then(response => {
+                if (response.ok) {
+                    clearInterval(reportCheckInterval);
+                    showReportSection('ready', processingId);
+                }
+            })
+            .catch(() => {
+                // Still not ready, keep polling
+            });
+        }
+    });
+</script>
+</body>
+</html>
